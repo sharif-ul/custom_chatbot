@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chatbox { width: 400px; height: 600px; border: 1px solid #ccc; padding: 10px; }
+        .message { margin: 10px 0; }
+        .user { font-weight: bold; color: blue; }
+        .chatbot { font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Chat with GPT-3/4</h1>
+    <div class="chatbox" id="chatbox"></div>
+    <input type="text" id="user_input" placeholder="Ask me anything..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById("user_input").value;
+            const chatbox = document.getElementById("chatbox");
+
+            // Display user input in chatbox
+            chatbox.innerHTML += `<div class="message user">You: ${userInput}</div>`;
+
+            fetch("/chat", {
+                method: "POST",
+                body: new URLSearchParams({ user_input: userInput }),
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<div class="message chatbot">Chatbot: ${data.response}</div>`;
+                document.getElementById("user_input").value = '';
+            });
+        }
+    </script>
+</body>
+</html>
